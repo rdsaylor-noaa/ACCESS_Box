@@ -1,0 +1,235 @@
+#!/usr/bin/env python
+#
+# pltbox - plots box model output from ACCESS_STD.out file
+#
+# Rick D. Saylor
+# NOAA ARL/ATDD
+# March 2019
+#
+import os
+import sys
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+# set formatting parameters
+tfsize   = 12     # plot title font size
+sfsize   = 18     # super title font size
+tylocn   = 1.02   # normal title y location
+tylocs   = 1.00   # title y location with text subscripts
+lfsize   = 12     # legend font size
+yfsize   = 14     # y-axis font size
+xfsize   = 14     # x-axis font size
+tlmaj    = 6      # major tick length
+tlmin    = 4      # minor tick length
+tlbsize  = 14     # tick label size
+lnwdth   = 1.5    # linewidth
+msize    = 4      # marker size
+
+# common formatting for each plot
+def settckslbls(ax):
+   ax.tick_params(which="both", direction="out")
+   ax.tick_params(which="major", length=tlmaj)
+   ax.tick_params(which="minor", length=tlmin)
+   ax.tick_params(which="both", labelsize=tlbsize)
+   ax.legend(loc=4, fontsize=lfsize)
+   plt.grid(b=True, which="major", color="gray", alpha=0.5)
+   plt.grid(b=True, which="minor", color="gray", alpha=0.25)
+   return 
+
+# take each string in a list and force uppercase
+def list2upper(lst):
+   newlst = []
+   for slst in lst:
+      newlst.append(slst.upper())
+
+   return newlst
+
+# ensures entered species for a given plot are actually
+# in the available species list
+def valid_species(pltsp, splist):
+   valid = True
+   for sp in pltsp:
+      if sp not in splist:
+          print("Invalid species %s" % sp)
+          pltsp.remove(sp)
+          newsp = input("Enter a new species: ")
+          pltsp.append(newsp.upper())
+          valid = False
+
+   if not valid:
+      valid_species(pltsp, splist)
+
+   return pltsp       
+
+def main(argv=None):
+
+   # settings for seaborn
+   sns.set_context("talk")
+   sns.set_style("ticks")
+
+   # set colors
+   colors = ["black", "peru", "royalblue", "red", "green", "gray", "magenta", "brown", "violet", "orange", "cyan"]
+   nclrs = len(colors)
+
+   if argv is None:
+      argv = sys.argv
+
+   # arguments
+   if len(argv) != 3:
+      print("usage: %s SIMNAME OUTTYPE" % os.path.basename(sys.argv[0]))
+      print(" where,")
+      print("         SIMNAME = simulation name")
+      print("         OUTTYPE = x11, pdf or png")
+      return 1
+
+   simname = argv[1]
+   otype   = argv[2] 
+
+   # get chemical mechanism name
+   fnsm = "./"+simname+"/ACCESS_SUMM.out"
+   if os.path.exists(fnsm):
+      print("Reading %s" % fnsm)
+      with open(fnsm) as fsm:
+         lines = fsm.readlines()
+         tokens = lines[3].split()
+         mechname = tokens[3]
+   else:
+      print("ERROR!!! output file %s not found!" % fnsp)
+      print("Stopping ...")
+      return 2 
+
+   # get data
+   fnsp = "./"+simname+"/ACCESS_STD.out" 
+   if os.path.exists(fnsp):
+      print("Reading %s" % fnsp)
+      with open(fnsp) as fsp:
+         lines = fsp.readlines()
+         splist = lines[4].split()
+         splist = splist[1:]
+         nsp = len(splist)
+         lines = lines[5:]
+   else:
+      print("ERROR!!! output file %s not found!" % fnsp)
+      print("Stopping ...")
+      return 2 
+
+   spdata = {}
+   for sp in splist:
+      spdata[sp] = list()
+   tsec = []
+   for line in lines:
+      data = line.split()
+      tsec.append(float(data[0]))
+      for n in range(1,nsp+1):
+         spdata[splist[n-1]].append(float(data[n]))
+
+   print("\nSpecies available to plot:")
+   for n in range(1,nsp+1):
+      print("    %2d. %s" % (n, splist[n-1]))
+
+   print("\nWhich species to include in each of 6 plots?")
+   print("Enter species names separated by spaces.")
+   print("\n  Plot 1:")
+   strinput = input()
+   plt1sp = list2upper(strinput.split())
+   valid_species(plt1sp, splist)
+
+   print("\n  Plot 2:")
+   strinput = input()
+   plt2sp = list2upper(strinput.split())
+   valid_species(plt2sp, splist)
+
+   print("\n  Plot 3:")
+   strinput = input()
+   plt3sp = list2upper(strinput.split())
+   valid_species(plt3sp, splist)
+
+   print("\n  Plot 4:")
+   strinput = input()
+   plt4sp = list2upper(strinput.split())
+   valid_species(plt4sp, splist)
+
+   print("\n  Plot 5:")
+   strinput = input()
+   plt5sp = list2upper(strinput.split())
+   valid_species(plt5sp, splist)
+
+   print("\n  Plot 6:")
+   strinput = input()
+   plt6sp = list2upper(strinput.split())
+   valid_species(plt6sp, splist)
+
+   # create the plots
+   fig = plt.figure(figsize=(12,12))
+
+   # plot 1
+   ax = fig.add_subplot(3,2,1)
+   ic=0
+   for sp in plt1sp:
+      plt.plot(tsec,spdata[sp], color=colors[ic], linestyle="-", marker="None", label=sp) 
+      ic=ic+1
+      if (ic == nclrs): ic = 0
+   settckslbls(ax)
+   ax.xaxis.set_ticklabels([])
+
+   # plot 2
+   ax = fig.add_subplot(3,2,2)
+   for sp in plt2sp:
+      plt.plot(tsec,spdata[sp], color=colors[ic], linestyle="-", marker="None", label=sp) 
+      ic=ic+1
+      if (ic == nclrs): ic = 0
+   settckslbls(ax)
+   ax.xaxis.set_ticklabels([])
+
+   # plot 3
+   ax = fig.add_subplot(3,2,3)
+   for sp in plt3sp:
+      plt.plot(tsec,spdata[sp], color=colors[ic], linestyle="-", marker="None", label=sp) 
+      ic=ic+1
+      if (ic == nclrs): ic = 0
+   settckslbls(ax)
+   ax.xaxis.set_ticklabels([])
+
+   # plot 4
+   ax = fig.add_subplot(3,2,4)
+   for sp in plt4sp:
+      plt.plot(tsec,spdata[sp], color=colors[ic], linestyle="-", marker="None", label=sp) 
+      ic=ic+1
+      if (ic == nclrs): ic = 0
+   settckslbls(ax)
+   ax.xaxis.set_ticklabels([])
+
+   # plot 5
+   ax = fig.add_subplot(3,2,5)
+   for sp in plt5sp:
+      plt.plot(tsec,spdata[sp], color=colors[ic], linestyle="-", marker="None", label=sp) 
+      ic=ic+1
+      if (ic == nclrs): ic = 0
+   settckslbls(ax)
+   ax.set_xlabel("t (s)", fontsize=yfsize, labelpad=10)
+
+   # plot 6
+   ax = fig.add_subplot(3,2,6)
+   for sp in plt6sp:
+      plt.plot(tsec,spdata[sp], color=colors[ic], linestyle="-", marker="None", label=sp) 
+      ic=ic+1
+      if (ic == nclrs): ic = 0
+   settckslbls(ax)
+   ax.set_xlabel("t (s)", fontsize=yfsize, labelpad=10)
+
+   plt.suptitle("ACCESS Box Model - "+mechname+" : "+simname, fontsize=sfsize, x=0.50, y=0.96, ha="center")
+
+   # output type
+   fn = "./img/pltbox_"+simname
+   if (otype == "pdf"):
+      plt.savefig(fn+".pdf")
+   elif (otype == "png"):
+      plt.savefig(fn+".png")
+   else:
+      plt.show()
+
+   return 0
+
+if __name__ == "__main__":
+   sys.exit(main())

@@ -1,0 +1,32 @@
+================================================================================
+ case2                                                                                               
+ Short sim name = case2           
+ Chemistry mech = mozart     
+ OPT_SIMTYPE    = SSTATE
+ Latitude       =   23.50 deg
+ Longitude      =  -84.37 deg
+ Year           = 2016
+ Month          =    6
+ Day            =   22
+ Start time     = 12:00:00 LT
+ Time zone diff =  -5
+ Integration dt =    10.0 s
+ Output dt      =    10.0 s
+
+ Species to STDOUT =   12
+ NO NO2 O3 OH HO2 CO H2O2 HNO3 HCHO C5H8 MACR MVK
+
+ Model Options:
+ CHEMISTRY      =  T
+ AQPHASE        =  F
+ CONSTRAIN      =  F
+ EMISSION       =  F
+ DRYDEPOS       =  F
+ ODESOLVER      = DVODE   
+
+ Input Files:
+ IC file name   = cinit_middle.dat
+ ENVDATA file name  = envstat0.dat    
+================================================================================
+Total CPU time:        0.000 hrs
+                       0.020 sec

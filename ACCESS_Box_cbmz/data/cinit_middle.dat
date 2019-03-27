@@ -1,0 +1,25 @@
+#########!#########!#########!#########!#########!#########!#########!#########!#########!#########!#########!
+#
+#   Initial Conditions File for the
+#   Atmospheric Chemistry and Canopy Exchange Simulation System (ACCESS)
+#   Box model version 3
+#
+#########!#########!#########!#########!#########!#########!#########!#########!#########!#########!#########!
+# Mid-range ICs    
+# Self-documenting section for mechanism consistency
+cbmz                gasmech         CHARACTER    gas-phase mechanism
+#
+# initial conditions - gas-phase species (if not listed, zero is assumed)
+# nics - number of non-zero initialized species
+8
+# species index     value       ppbv(1) or molec/cm3(2)      constrained?        species
+# INTEGER           REAL            INTEGER                   1=Y 0=N
+3                   8.000E+01          1                         1                  O3
+1                   0.100E+00          1                         0                  NO
+2                   5.000E+00          1                         0                  NO2
+15                  1.000E+02          1                         1                  CO
+32                  1.700E+03          1                         1                  CH4
+13                  1.000E+00          1                         0                  H2O2
+48                  5.000E+00          1                         0                  ISOP
+14                  0.500E+00          1                         0                  HCHO
+#########!#########!#########!#########!#########!#########!#########!#########!#########!#########!#########!
