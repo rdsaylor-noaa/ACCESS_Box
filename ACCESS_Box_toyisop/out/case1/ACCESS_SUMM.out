@@ -1,0 +1,32 @@
+================================================================================
+ case1                                                                                               
+ Short sim name = case1           
+ Chemistry mech = toyisop    
+ OPT_SIMTYPE    = SSTATE
+ Latitude       =   23.50 deg
+ Longitude      =  -84.37 deg
+ Year           = 2016
+ Month          =    6
+ Day            =   22
+ Start time     = 12:00:00 LT
+ Time zone diff =  -5
+ Integration dt =    10.0 s
+ Output dt      =    10.0 s
+
+ Species to STDOUT =   11
+ NO NO2 O3 OH HO2 CO H2O2 HNO3 HCHO C5H8 IPROD
+
+ Model Options:
+ CHEMISTRY      =  T
+ AQPHASE        =  F
+ CONSTRAIN      =  F
+ EMISSION       =  F
+ DRYDEPOS       =  F
+ ODESOLVER      = DVODE   
+
+ Input Files:
+ IC file name   = cinit_remote.dat
+ ENVDATA file name  = envstat0.dat    
+================================================================================
+Total CPU time:        0.000 hrs
+                       0.009 sec
